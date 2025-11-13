@@ -1,0 +1,43 @@
+#cloud-config
+# vim: syntax=yaml
+# examples:
+# https://cloudinit.readthedocs.io/en/latest/topics/examples.html
+hostname: ${host_name}
+#bootcmd:
+# https://stackoverflow.com/questions/53749376/cloud-init-runcmd-syntx-of-a-command-that-adding-a-line-to-file
+write_files:
+  - path: /root/agent.sh
+    permissions: 0744
+    owner: root
+    content: |
+      #!/usr/bin/env bash
+      set -e
+      if [ -n "${proxy_ip}" ] && [ -n "${no_proxy_ip}" ]; then
+        echo "http_proxy=${proxy_ip}" >> /etc/environment
+        echo "https_proxy=${proxy_ip}" >> /etc/environment
+        echo "no_proxy=${no_proxy_ip}" >> /etc/environment
+      fi
+# install DEBIAN_FRONTEND=noninteractive apt-get -y install
+runcmd:
+  - bash /root/agent.sh
+ssh_pwauth: true
+disable_root: false
+growpart:
+  mode: auto
+  devices:
+    - "/"
+#    - "/local/vda1"
+chpasswd:
+  list: |
+    root: ${passwd}
+  expire: false
+users:
+  - name: ${user}
+    passwd: ${passwd}
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin
+    home: /home/${user}
+    shell: /bin/bash
+    lock_passwd: false
+    ssh_authorized_keys: ${ssh_authorized_keys}
+final_message: "The system is finally up, after $UPTIME seconds"

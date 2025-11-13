@@ -1,0 +1,19 @@
+#version: 2
+#ethernets:
+#  enp0s3:
+#    dhcp4: true
+network:
+  ethernets:
+    ens3:
+      addresses:
+        - ${ip_addr}/24
+      nameservers:
+        addresses:
+          - ${dns_server}
+          - 8.8.8.8
+        search: [ ]
+      routes:
+        - to: default
+          via: ${def_gateway}
+          on-link: true
+  version: 2

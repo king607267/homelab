@@ -1,0 +1,20 @@
+module "libvirt" {
+  source              = "./libvirt"
+  libvirt             = var.libvirt
+  disk_size           = var.disk_size
+  data_disk_size      = var.data_disk_size
+  memory              = var.memory
+  vcpu                = var.vcpu
+  master_ips          = var.master_ips
+  node_ips            = var.node_ips
+  dns_server          = var.dns_server
+  def_gateway         = var.def_gateway
+  user                = var.user
+  passwd              = var.passwd
+  no_proxy_ip         = var.no_proxy_ip
+  proxy_ip            = var.proxy_ip
+  ssh_authorized_keys = var.ssh_authorized_keys
+  hostname_prefix     = var.hostname_prefix
+  libvirt_disk_path   = var.libvirt_disk_path
+  cloudimg_url        = var.cloudimg_url
+}
