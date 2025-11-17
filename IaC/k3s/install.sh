@@ -1,29 +1,44 @@
 #!/bin/bash
 set -eo pipefail
+if ! command -v direnv &> /dev/null; then
+    echo "Please install direnv https://github.com/direnv/direnv/blob/master/docs/installation.md"
+    echo "hook into your shell. https://github.com/direnv/direnv/blob/master/docs/hook.md#setup"
+    echo "sudo apt update && sudo apt install direnv && echo 'eval \"\$(direnv hook bash)\"' >> ~/.bashrc && source ~/.bashrc"
+    exit 1
+fi
+
+if ! command -v ansible &> /dev/null; then
+  echo "Please install ansible2.11+, https://technotim.live/posts/ansible-automation/#installing-the-latest-version-of-ansible"
+  echo "curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py && python3 -m pip -V && echo 'export PATH=\"/home/@@ change @@/.local/bin:\$PATH\"' >> ~/.bashrc && source ~/.bashrc && python3 -m pip install netaddr && python3 -m pip install --user ansible"
+  exit 1
+fi
+
+if [ -f "../../.envrc_changeme" ]; then
+  echo "Please edit ../../.envrc_changeme and change the values to your own. rename to .envrc  run again"
+  exit 1
+fi
+
 k3s_ansible="./k3s_ansible/"
 if [ -n "$install_vms" ]; then
-  sudo snap install --classic opentofu
   cd ../vms
-  tofu init
-  tofu destroy --auto-approve
-  tofu apply --auto-approve
+  ./install.sh
   cd ../k3s
 fi
 
-if [ ! -d "${k3s_ansible}" ]; then
+if [ ! -d "$k3s_ansible" ]; then
   git clone https://github.com/king607267/k3s-ansible.git ${k3s_ansible}
 else
   git -C ${k3s_ansible} pull
 fi
 
-#install requirements
 ansible-galaxy collection install -r ${k3s_ansible}/collections/requirements.yml
 
 all_path=${k3s_ansible}inventory/my-cluster/group_vars/all.yml
 
 if [ ! -f "all_changeme.yml" ]; then
   cp -af ${k3s_ansible}inventory/sample/group_vars/all.yml all_changeme.yml
-  echo "Please edit all_changeme.yml and change the values to your own. run again"
+  echo "Please edit all_changeme.yml,.envrc_changeme and change the values to your own. run again"
+  echo "nano all_changeme.yml"
   exit 0
 fi
 
@@ -47,7 +62,7 @@ echo "master" >> "${hosts_path}"
 echo "node" >> "${hosts_path}"
 
 cp -af ${k3s_ansible}ansible.example.cfg  ${k3s_ansible}ansible.cfg
-
+echo "Please input hosts password:"
 ansible-playbook ${k3s_ansible}site.yml -i $hosts_path --ask-become-pass
 
 for ip in $TF_VAR_master_ips; do

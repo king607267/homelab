@@ -19,18 +19,20 @@ variable "vcpu" {
 }
 
 variable "disk_size" {
-  type    = number
+  type = number
 }
 
 variable "data_disk_size" {
-  type    = number
+  type = number
 }
 
 variable "proxy_ip" {
-  type = string
+  type    = string
+  default = ""
 }
 variable "no_proxy_ip" {
-  type = string
+  type    = string
+  default = ""
 }
 
 variable "def_gateway" {

@@ -8,7 +8,7 @@ resource "libvirt_pool" "ubuntu" {
   name = "homelab"
   type = "dir"
   target {
-    path = var.libvirt_disk_path
+    path = "${var.libvirt_disk_path}pool/"
   }
 }
 
@@ -116,11 +116,7 @@ resource "libvirt_domain" "domain-ubuntu" {
       type        = "ssh"
       user        = var.user
       host        = concat(var.master_ips, var.node_ips)[count.index]
-      #                host        = libvirt_domain.domain-ubuntu[0].network_interface[0].addresses[0]
       private_key = file(var.ssh_private_key)
-      #      bastion_host        = "ams-kvm-remote-host"
-      #      bastion_user        = "deploys"
-      #      bastion_private_key = file("~/.ssh/deploys.pem")
       timeout     = "2m"
     }
   }
