@@ -8,7 +8,7 @@ resource "libvirt_pool" "ubuntu" {
   name = "homelab"
   type = "dir"
   target {
-    path = "${var.libvirt_disk_path}pool/"
+    path = var.libvirt_disk_path
   }
 }
 

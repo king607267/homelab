@@ -9,7 +9,7 @@ fi
 
 if ! command -v ansible &> /dev/null; then
   echo "Please install ansible2.11+, https://technotim.live/posts/ansible-automation/#installing-the-latest-version-of-ansible"
-  echo "curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py && python3 -m pip -V && echo 'export PATH=\"/home/@@ change @@/.local/bin:\$PATH\"' >> ~/.bashrc && source ~/.bashrc && python3 -m pip install netaddr && python3 -m pip install --user ansible"
+  echo "curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py && python3 -m pip -V && echo 'export PATH=\"/home/`whoami`/.local/bin:\$PATH\"' >> ~/.bashrc && source ~/.bashrc && python3 -m pip install netaddr && python3 -m pip install --user ansible"
   exit 1
 fi
 
@@ -37,7 +37,7 @@ all_path=${k3s_ansible}inventory/my-cluster/group_vars/all.yml
 
 if [ ! -f "all_changeme.yml" ]; then
   cp -af ${k3s_ansible}inventory/sample/group_vars/all.yml all_changeme.yml
-  echo "Please edit all_changeme.yml,.envrc_changeme and change the values to your own. run again"
+  echo "Please edit all_changeme.yml,.envrc and change the values to your own. run again"
   echo "nano all_changeme.yml"
   exit 0
 fi
@@ -62,8 +62,7 @@ echo "master" >> "${hosts_path}"
 echo "node" >> "${hosts_path}"
 
 cp -af ${k3s_ansible}ansible.example.cfg  ${k3s_ansible}ansible.cfg
-echo "Please input hosts password:"
-ansible-playbook ${k3s_ansible}site.yml -i $hosts_path --ask-become-pass
+ansible-playbook ${k3s_ansible}site.yml -i $hosts_path
 
 for ip in $TF_VAR_master_ips; do
   ssh -o LogLevel=FATAL -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "${TF_VAR_user}"@$(echo $ip | sed 's/[][]//g; s/"//g; s/,//g') 'sudo cat /etc/rancher/k3s/k3s.yaml' > ./k3s.yaml
