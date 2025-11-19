@@ -20,7 +20,6 @@ fi
 
 if [ -z "$TF_VAR_ssh_authorized_keys" ] || [ "$TF_VAR_ssh_authorized_keys" = "[]" ]; then
   echo "Please change TF_VAR_ssh_authorized_keys in .evnrc."
-  echo "ssh-keygen -t rsa"
   echo "cat  ~/.ssh/id_rsa.pub"
   exit 1
 fi

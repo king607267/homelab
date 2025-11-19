@@ -1,5 +1,5 @@
 export TF_VAR_user=ubuntu
-export TF_VAR_libvirt="qemu:///system"
+export TF_VAR_libvirt=""
 # docker run --rm -it serversideup/mkpasswd --method=SHA-512
 #123456
 export TF_VAR_passwd='$6$i10wjFC.4z$VOxB0zHrx4m4soND.PI3ChnsM6EOFi4BVoZyO7wpiQGt0PkSqwCH312LTZDzU5uMlS.TYSId/gZUPduagu9Vc1'
@@ -14,10 +14,12 @@ export TF_VAR_libvirt_disk_path="/opt/terraform/kvm/pool/"
 export TF_VAR_cloudimg_url="/opt/terraform/kvm/img/ubuntu-22.04-server-cloudimg-amd64.img"
 export TF_VAR_vcpu="1"
 export TF_VAR_memory="2048"
-export TF_VAR_master_ips='["192.168.1.10"]'
+#"192.168.1.10"
+export TF_VAR_master_ips='[]'
+#"192.168.1.11"
 export TF_VAR_node_ips='["192.168.1.11"]'
-export TF_VAR_def_gateway='192.168.111.5'
-export TF_VAR_dns_server='192.168.1.1'
+export TF_VAR_def_gateway=''
+export TF_VAR_dns_server=''
 
 export http_proxy=''
 export https_proxy=''
