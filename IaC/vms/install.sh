@@ -14,7 +14,7 @@ if [ "$TF_VAR_libvirt" = "" ]; then
   echo "Please change TF_VAR_libvirt in .evnrc."
   echo "https://blog.csdn.net/xiaoyi23000/article/details/80597516#commentBox"
   echo "ssh-keygen -t rsa && ssh-copy-id -i ~/.ssh/id_rsa.pub user@ip"
-  echo "qemu:///system or qemu+ssh://@@change@@ip/system?keyfile=~/.ssh/id_rsa "
+  echo "qemu:///system or qemu+ssh://@@change@@@ip/system?keyfile=~/.ssh/id_rsa"
   exit 1
 fi
 

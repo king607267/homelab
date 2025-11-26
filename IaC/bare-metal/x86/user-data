@@ -1,0 +1,84 @@
+#cloud-config
+autoinstall:
+  apt:
+    disable_components: []
+    geoip: true
+    preserve_sources_list: false
+    primary:
+    - arches:
+      - amd64
+      - i386
+      - aarch64
+      uri: http://cn.archive.ubuntu.com/ubuntu
+    - arches:
+      - default
+      uri: http://ports.ubuntu.com/ubuntu-ports
+  drivers:
+    install: false
+  kernel:
+    package: linux-generic
+  keyboard:
+    layout: us
+    toggle: null
+    variant: ''
+  locale: en_US.UTF-8
+  network:
+    ethernets:
+      enp1s0:
+        addresses:
+        - 192.168.1.39/24
+        nameservers:
+          addresses:
+          - 192.168.1.5
+          - 8.8.8.8
+          search: []
+        routes:
+        - to: default
+          via: 192.168.1.1
+          on-link: true
+    version: 2
+  source:
+    id: ubuntu-server
+    search_drivers: false
+  ssh:
+    allow-pw: true
+    authorized-keys: []
+    install-server: true
+  storage:
+    layout:
+      name: lvm
+#      type: all
+  updates: security
+  user-data:
+    disable_root: false
+    timezone: Asia/Shanghai
+    package_upgrade: true
+    users:
+      - name: ubuntu
+        primary_group: users
+        groups: sudo
+        lock_passwd: false
+        # don't need PW since using SSH, leaving this in though...
+        #docker run --rm -it serversideup/mkpasswd --method=SHA-512
+        #123456
+        passwd: $6$POxkbMXSuSGZ.W65$E/05OLFA6sxWOmvTKa5NqWOGs4/6ozVZt4RaOlob31dZaNFxgh4SHBgAsjk9jI8oC88MtrDF3DFD.gL6okMaS/
+        shell: /bin/bash
+        # use cat ~/.ssh/id_rsa.pub or generate to get your public key
+        ssh_authorized_keys:
+          - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDfsjjanTMNaV5+YzvDe+C3zFAq+G+Brwz/Ov4pVxA/VKuXW0Y9ptddNLOBMX13nO+R49n8C/HfbbAMqTZYq6Gv3MEczr+dSJnCJgrGvHTe6X5QcTGFNv1iwAe3KjSMRzGTPi5RUsAvXwUJJKFX4sHSSLTYB7JG/BvudG1eSLQjGDiJ2+a8OEIBCc46SpzxT12ZxABfwcY7NiYztVkSQS4k2ouNQbtl3CB7YfF33jkEISYqkPZWS2fsw4SC8TFfvjD7O1TI6i1Tu9HGXndo0WZzdQujTWdksif1ZtCa4ThkurytGXHAY8rA+FGYjqNCPs738VusG8D1IFer2bgjEPlN ubuntu@ubuntu-TM1709"
+          - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCp5d+8RZqxRoiFk7Ac2+4qez8F2kVLNgKXPKmqs82IABvPgdxqyVb8p6dzJKbxTenxtsr6j+Msb21pAEPQQKrLg+GWdwj849kRp9vPPDgZoVYJuoqOMIqbraQITjKlaISf/+r5GcOji36oATyji15uBLjdvIGJqxispopX5aoKE4WSPW1LS35+MYUmBbQ9UjBE1jTrKhf5MSl4tfDyXdR7NaCfVgevMTMopJqeMEKEltM4DMp1WufUWkvzPjlK/YGkoMERdqEKvGQg5GqCbxjtpokXVroRZR2YsCtz0E+Xi89KAtMyFsb4ISOU47sm4uUVjSd+ZPzafVF8B0YTypmJW9YB+Om/FLZLnM8pViXkAzYg7m5Wt6kkJruiNBliY98AZBAiwuK+lSpns1EhSHFWQub89xNpFL9zxgrbWD9lcJ2Lbl7AU4pOUdKgyih15XFgaOZJ83zv46GjQIZhLwQGMM+iiG5OJa206578EXKIapLy651GVxIYoeMeWkdTxb0= ubuntu@ubuntu-ThinkStation-P368"
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        sudo: ALL=(ALL) ALL
+  late-commands:
+    - curtin in-target --target=/target -- lvextend -l +100%FREE /dev/mapper/ubuntu--vg-ubuntu--lv
+    - curtin in-target --target=/target -- resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
+#    - echo auto_install > /target/etc/hostname
+    - |
+      cat <<EOF | sudo tee /target/etc/environment
+      PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
+      http_proxy=http://192.168.1.1:666
+      https_proxy=http://192.168.11.1:666
+      no_proxy=192.168.122.0/24,10.96.0.0/12,10.244.0.0/16,localhost,127.0.0.0/8,192.168.112.0/16,192.168.113.0/16,.svc,.ubuntu.com
+      EOF
+    - shutdown -h now
+  version: 1

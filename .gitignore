@@ -1,10 +1,13 @@
 # Local .terraform directories
 **/.terraform/*
-**/k3s_ansible/*
+**/k3sAnsible/*
 
 # .tfstate files
 *.tfstate
 *.tfstate.*
+*.iso
+*.img
+*.img.*
 
 # Crash log files
 crash.log

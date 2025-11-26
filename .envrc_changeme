@@ -1,8 +1,10 @@
+#----------vms,k3s----------
+#export install_vms=true
 export TF_VAR_user=ubuntu
 export TF_VAR_libvirt=""
 # docker run --rm -it serversideup/mkpasswd --method=SHA-512
 #123456
-export TF_VAR_passwd='$6$i10wjFC.4z$VOxB0zHrx4m4soND.PI3ChnsM6EOFi4BVoZyO7wpiQGt0PkSqwCH312LTZDzU5uMlS.TYSId/gZUPduagu9Vc1'
+export TF_VAR_passwd='$6$0CNw1tIs95L$eqVKBZGA4b7bJuEP0j/k0adQ7DYsCsGJMlXbdqRVoJ7rmuzVyEAYCyFhQdtaYjY/BxrzOs8FdXEl81qzjTvPW.'
 export TF_VAR_ssh_authorized_keys='[]'
 export TF_VAR_proxy_ip=''
 export TF_VAR_no_proxy_ip=''
@@ -21,7 +23,7 @@ export TF_VAR_node_ips='["192.168.1.11"]'
 export TF_VAR_def_gateway=''
 export TF_VAR_dns_server=''
 
+#----------control node----------
 export http_proxy=''
 export https_proxy=''
 export no_proxy=''
-#export install_vms=true
