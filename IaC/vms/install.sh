@@ -30,7 +30,7 @@ if [ -z "$TF_VAR_master_ips" ] || [ "$TF_VAR_master_ips" = "[]" ] || [ -z "$TF_V
 fi
 echo "Please input control node password:"
 sudo snap install --classic opentofu
-echo "export PATH="/snap/bin:\$PATH\" >> ~/.bashrc && source ~/.bashrc
+echo "export PATH="\"/snap/bin:\$PATH\" >> ~/.bashrc && source ~/.bashrc
 if ! command -v mkisofs &> /dev/null; then
   echo "Please input control node password:"
   sudo apt-get -y update && sudo apt-get -y install mkisofs

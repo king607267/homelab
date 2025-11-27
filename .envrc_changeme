@@ -22,8 +22,10 @@ export TF_VAR_master_ips='[]'
 export TF_VAR_node_ips='["192.168.1.11"]'
 export TF_VAR_def_gateway=''
 export TF_VAR_dns_server=''
+export kubeconfig=$(pwd)/IaC/k3s/k3s.yaml
 
 #----------control node----------
 export http_proxy=''
 export https_proxy=''
 export no_proxy=''
+export ANSIBLE_HOST_KEY_CHECKING=False

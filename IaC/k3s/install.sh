@@ -1,11 +1,13 @@
 #!/bin/bash
 set -eo pipefail
-envrcChangeme="$( dirname $(pwd))/.envrc_changeme"
+envrcChangeme="$(dirname $(dirname $(pwd)))/.envrc_changeme"
+envrc="$(dirname $(dirname $(pwd)))/.envrc"
 k3sAnsiblePath="k3sAnsible/"
 vmsPath="$( dirname $(pwd))/vms/"
 k3sPath="$(pwd)"
 allYmlPath=${k3sAnsiblePath}inventory/my-cluster/group_vars/all.yml
 hostsPath=${k3sAnsiblePath}inventory/my-cluster/hosts.ini
+kubeConfigPath="$(pwd)/k3s.yaml"
 
 if ! command -v direnv &> /dev/null; then
     echo "Please install direnv https://github.com/direnv/direnv/blob/master/docs/installation.md"
@@ -24,7 +26,7 @@ fi
 
 if [ -f "$envrcChangeme" ]; then
   echo "Please edit .envrc_changeme and change the values to your own. rename to .envrc  run again"
-  echo "nano $envrcChangeme"
+  echo "nano $envrcChangeme && mv $envrcChangeme $envrc"
   exit 1
 fi
 
@@ -74,5 +76,6 @@ for ip in $TF_VAR_master_ips; do
   ssh -o LogLevel=FATAL -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "${TF_VAR_user}"@$(echo $ip | sed 's/[][]//g; s/"//g; s/,//g') 'sudo cat /etc/rancher/k3s/k3s.yaml' > ./k3s.yaml
   break
 done
-
-sed -i "s|127.0.0.1|$(cat $allYmlPath | grep apiserver_endpoint: | awk '{print $2}')|" ./k3s.yaml
+if [ -f "$kubeConfigPath" ]; then
+  sed -i "s|127.0.0.1|$(cat $allYmlPath | grep apiserver_endpoint: | awk '{print $2}')|" $kubeConfigPath
+fi
