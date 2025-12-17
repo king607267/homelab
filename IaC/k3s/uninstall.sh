@@ -2,15 +2,14 @@
 set -eo pipefail
 
 k3sAnsiblePath="k3sAnsible/"
-reset_path=${k3sAnsiblePath}reset.yml
-hosts_path=${k3sAnsiblePath}inventory/my-cluster/hosts.ini
-vmsPath="$( dirname $(pwd))/vms/"
+reset_path=playbooks/reset.yml
+hosts_path=inventory.yml
 k3sPath="$(pwd)"
 
 echo "Please input vms password:"
+cd "$k3sAnsiblePath"
 ansible-playbook $reset_path -i $hosts_path
-if [ -n "$install_vms" ]; then
-  cd "$vmsPath"
-  ./uninstall.sh
-  cd "$k3sPath"
+cd "$k3sPath"
+if [ -f "inventory.yml" ]; then
+  rm inventory.yml
 fi

@@ -32,8 +32,9 @@ sleep 1
 sudo mount  "${loop}p2" $mountPoint
 echo "mount ${loop}p2 to $mountPoint ok"
 #https://docs.armbian.com/User-Guide_Autoconfig/
-sudo cp .not_logged_in_yet provisioning.sh $mountRootPath
-sudo ls -al $mountRootPath
+sudo cp provisioning.sh $mountRootPath
+echo "PRESET_CONFIGURATION=\"$armbian_not_logged_in_yet_path\"" | sudo tee "$mountRootPath.not_logged_in_yet" > /dev/null
+sudo ls -al "$mountRootPath"
 sudo umount $mountPoint
 echo "umount ${loop}p2 ok"
 echo "copy data to result.img start"

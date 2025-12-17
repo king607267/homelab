@@ -13,7 +13,7 @@ resource "libvirt_pool" "ubuntu" {
 }
 
 resource "libvirt_volume" "ubuntu-qcow2" {
-  name   = format("%s-cloudimg$%d", var.hostname_prefix, count.index)
+  name   = format("%s-cloudimg%d", var.hostname_prefix, count.index)
   pool   = libvirt_pool.ubuntu.name
   source = var.cloudimg_url
   format = "qcow2"
@@ -109,7 +109,7 @@ resource "libvirt_domain" "domain-ubuntu" {
   provisioner "remote-exec" {
     inline = [
       "echo hostname:`cat /etc/hostname`",
-      #      "echo '${LOCAL_IP-:`ip addr | sed -En \'s/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p\'`}'"
+      "sudo apt-get update -qq && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y nfs-common"
     ]
 
     connection {
@@ -117,7 +117,7 @@ resource "libvirt_domain" "domain-ubuntu" {
       user        = var.user
       host        = concat(var.master_ips, var.node_ips)[count.index]
       private_key = file(var.ssh_private_key)
-      timeout     = "2m"
+      timeout     = "3m"
     }
   }
 

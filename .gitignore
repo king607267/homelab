@@ -1,6 +1,8 @@
 # Local .terraform directories
 **/.terraform/*
+
 **/k3sAnsible/*
+**/chart_*/*
 
 # .tfstate files
 *.tfstate

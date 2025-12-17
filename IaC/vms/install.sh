@@ -35,6 +35,6 @@ if ! command -v mkisofs &> /dev/null; then
   echo "Please input control node password:"
   sudo apt-get -y update && sudo apt-get -y install mkisofs
 fi
-tofu init
+tofu init -upgrade
 tofu destroy --auto-approve
 tofu apply --auto-approve
