@@ -22,10 +22,118 @@ export TF_VAR_master_ips='[]'
 export TF_VAR_node_ips='["192.168.1.11"]'
 export TF_VAR_def_gateway=''
 export TF_VAR_dns_server=''
-export kubeconfig=$(pwd)/IaC/k3s/k3s.yaml
+
+export KUBECONFIG=$(pwd)/IaC/k3s/k3s.yaml
 
 #----------control node----------
 export http_proxy=''
 export https_proxy=''
 export no_proxy=''
 export ANSIBLE_HOST_KEY_CHECKING=False
+export armbian_not_logged_in_yet_path=https://auto.remote.com/armbian-user-data
+export x86_auto_install_ip=192.168.112.21/24
+#for cdrom /cdrom/server/,for remote https://auto.remote.com
+export x86_remote_user_data=/cdrom/server/
+
+export gateway_namespace="home-gateway"
+export gateway_name="main-gateway"
+export gateway_ip="192.168.112.250"
+export gateway_ver="v1.4.1"
+export gateway_port_https=443
+export gateway_port_http=80
+
+export envoy_version=v1.6.1
+
+export metallb_ip_pool=192.168.112.250-192.168.112.254
+export metallb_pool_name=metallb-ip-pool
+export metallb_version=0.15.3
+
+export domain_grafana=domain.grafana.com
+export domain_prome=domain.prome.com
+export domain_nas=domain.nas.com
+export domain_headlamp=domain.headlamp.com
+export domain_wow=domain.wow.com
+export domain_wow_wotlk=domain.wow.wotlk.com
+export domain_wow_tbc=domain.wow.tbc.com
+export domain_wow_classic=domain.wow.classic.com
+export domain_kubeshark=domain.kubeshark.com
+export domain_generalized=*.domain.com
+
+export alidns_group_name=example.com
+#base64
+export alidns_access_key=
+#base64
+export alidns_secret_key=
+export alidns_acme_email=your@xx.com
+#https://acme-v02.api.letsencrypt.org/directory
+export alidns_issuer_server=https://acme-staging-v02.api.letsencrypt.org/directory
+export alidns_region_id=cn-beijing
+export alidns_pk_secret_ref=letsencrypt
+export alidns_secret_name="alidns-secret"
+
+export cilium_version=1.19.0-pre.3
+export cilium_cidr=192.168.112.248/29
+export cilium_k8s_service_host=192.168.112.210
+
+export headlamp_version=0.38.0
+
+export nfs_server='192.168.113.148'
+export nfs_server_path='/path/nfs'
+
+export vdsm_http_port=5000
+export vdsm_https_port=5001
+export vdsm_ssh_port=2222
+
+export kubeshark_version=v52.11.0
+
+export prome_version=80.2.0
+export prome_grafana_port=80
+export prome_grafana_timezone=Asia/Shanghai
+export prome_port=9090
+export prome_email_from=from@xx.com
+export prome_email_to=to@xx.com
+export prome_smtp_smarthost=smtp.xx.com:xxx
+export prome_smtp_auth_username=auth@xx.com
+export prome_smtp_auth_password=
+
+export wow_maps_nfs_ser=192.168.113.148
+export wow_maps_nfs_path=/mnt/nfs/WoW
+export wow_custom_sql_url=https://remout.sql.com
+export wow_mysql_external_name=192.168.113.148
+
+
+export wow_classic_realm_name=经典旧世
+export wow_classic_realm_port=8060
+export wow_classic_mysql_user_name=mangos
+export wow_classic_mysql_user_port=3306
+#Chinese，French，German，Italian，Korean，Russian，Spanish，Spanish_South_American，Taiwanese
+export wow_classic_mysql_user_i18n=Chinese
+export wow_classic_mysql_user_tz=Asia/Shanghai
+export wow_classic_mysql_user_pwd=mangos
+export wow_classic_mysql_user_root_pwd=mangos
+export wow_classic_registration_http_port=806
+export wow_classic_registration_https_port=4436
+
+export wow_tbc_realm_name=燃烧的远征
+export wow_tbc_realm_port=8070
+export wow_tbc_mysql_user_name=mangos
+export wow_tbc_mysql_user_port=3306
+#Chinese，French，German，Italian，Korean，Russian，Spanish，Spanish_South_American，Taiwanese
+export wow_tbc_mysql_user_i18n=Chinese
+export wow_tbc_mysql_user_tz=Asia/Shanghai
+export wow_tbc_mysql_user_pwd=mangos
+export wow_tbc_mysql_user_root_pwd=mangos
+export wow_tbc_registration_http_port=807
+export wow_tbc_registration_https_port=4437
+
+export wow_wotlk_realm_name=巫妖王之怒
+export wow_wotlk_realm_port=8008
+export wow_wotlk_mysql_user_name=mangos
+export wow_wotlk_mysql_user_port=3306
+#Chinese，French，German，Italian，Korean，Russian，Spanish，Spanish_South_American，Taiwanese
+export wow_wotlk_mysql_user_i18n=Chinese
+export wow_wotlk_mysql_user_tz=Asia/Shanghai
+export wow_wotlk_mysql_user_pwd=mangos
+export wow_wotlk_mysql_user_root_pwd=mangos
+export wow_wotlk_registration_http_port=808
+export wow_wotlk_registration_https_port=4438
