@@ -4,14 +4,14 @@ set -eo pipefail
 #https://www.pugetsystems.com/labs/hpc/ubuntu-22-04-server-autoinstall-iso/
 #https://cloudinit.readthedocs.io/en/latest/reference/examples.html
 #https://canonical-subiquity.readthedocs-hosted.com/en/latest/reference/autoinstall-reference.html#user-data
-ubuntuVer="24.04.3" #22.04.5
+ubuntuVer="22.04.5" #22.04.5 or 24.04.3
 sourceISO="/tmp/${ubuntuVer}autoinstall.iso"
 resultISO="$(pwd)/result.iso"
 buildDir="/tmp/autoinstall-ISO/"
 sourceIsoPath="/tmp/autoinstall-ISO/${ubuntuVer}autoinstall.iso"
 sourceFiles="/tmp/autoinstall-ISO/source-files/"
 sourceBootPath="/tmp/autoinstall-ISO/source-files/[BOOT]"
-buildCommandPath="/tmp/autoinstall-ISO/source-files/buildCommand.sh"
+buildCommandPath="/tmp/autoinstall-ISO/buildCommand.sh"
 destBootPath="/tmp/autoinstall-ISO/BOOT/"
 destBoot1Path="BOOT/1-Boot-NoEmul.img"
 destBoot2Path="BOOT/2-Boot-NoEmul.img"
@@ -52,6 +52,7 @@ if [[ $x86_remote_user_data != http* ]]; then
   echo "  version: 1" >> $userDataPath
   echo "  early-commands:" >> $userDataPath
   echo "    - ping -c1 ${TF_VAR_def_gateway}" >> $userDataPath
+#  echo "  proxy: ${TF_VAR_proxy_ip}" >> $userDataPath
   echo "  apt:" >> $userDataPath
   echo "    preserve_sources_list: false" >> $userDataPath
   echo "    mirror-selection:" >> $userDataPath
@@ -136,6 +137,8 @@ if [[ $x86_remote_user_data != http* ]]; then
 
   cat $userDataPath > "user-data-bak"
 fi
+#xorriso created ISO boots in kvm but not physical laptop
+#https://unix.stackexchange.com/questions/712319/xorriso-created-iso-boots-in-virtualbox-but-not-physical-laptop
 xorriso -indev $sourceIsoPath -report_el_torito as_mkisofs
 echo "xorriso -as mkisofs -r -o $resultISO $(xorriso -indev $sourceIsoPath -report_el_torito as_mkisofs | grep '^-') ." > $buildCommandPath
 sed -i "s|zero_gpt:'$sourceIsoPath'|zero_gpt:'../$destBoot1Path'|" $buildCommandPath
@@ -144,4 +147,4 @@ sed -i 's/$/ \\/' $buildCommandPath | sed '$ s/ \\/$/'
 sed -i  ':a;N;$!ba;s/\(.*\)\\/\1/' $buildCommandPath
 chmod u+x $buildCommandPath
 cd $sourceFiles
-./buildCommand.sh
+cat "$buildCommandPath" | bash

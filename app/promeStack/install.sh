@@ -96,10 +96,10 @@ spec:
   parentRefs:
     - name: $gateway_name
       namespace: $gateway_namespace
-      sectionName: shared-http
+      sectionName: $domain_http_route_name
     - name: $gateway_name
       namespace: $gateway_namespace
-      sectionName: shared-https
+      sectionName: $domain_https_route_name
   hostnames:
     - $domain_grafana
   rules:
@@ -121,10 +121,10 @@ spec:
   parentRefs:
     - name: $gateway_name
       namespace: $gateway_namespace
-      sectionName: shared-http
+      sectionName: $domain_http_route_name
     - name: $gateway_name
       namespace: $gateway_namespace
-      sectionName: shared-https
+      sectionName: $domain_https_route_name
   hostnames:
     - $domain_prome
   rules:

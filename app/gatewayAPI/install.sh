@@ -36,6 +36,7 @@ gateway:
       - "$domain_wow_tbc"
       - "$domain_wow_classic"
       - "$domain_kubeshark"
+      - "$domain_longhorn"
 
 gatewayClass :
   enabled: true
@@ -49,11 +50,11 @@ gatewayClass :
 
 routers:
 #http routing
-  - name: shared-https
+  - name: $domain_https_route_name
     protocol: HTTPS
     port: $gateway_port_https
     matchLabels: "shared-gateway-access: 'true'"
-  - name: shared-http
+  - name: $domain_http_route_name
     protocol: HTTP
     port: $gateway_port_http
     matchLabels: "shared-gateway-access: 'true'"

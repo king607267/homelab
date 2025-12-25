@@ -137,3 +137,15 @@ export wow_wotlk_mysql_user_pwd=mangos
 export wow_wotlk_mysql_user_root_pwd=mangos
 export wow_wotlk_registration_http_port=808
 export wow_wotlk_registration_https_port=4438
+
+export longhorn_version=v1.10.1
+
+export app_install_sort=`cat << 'EOF'
+metalLB
+envoyGateway
+gatewayCRDs
+certManager
+gatewayAPI
+longhorn
+#headlamp
+EOF`

@@ -1,5 +1,22 @@
 #!/bin/bash
 set -eo pipefail
+
+envrcChangeme="$(dirname $(dirname $(pwd)))/.envrc_changeme"
+envrc="$(dirname $(dirname $(pwd)))/.envrc"
+
+if ! command -v direnv &> /dev/null; then
+    echo "Please install direnv https://github.com/direnv/direnv/blob/master/docs/installation.md"
+    echo "hook into your shell. https://github.com/direnv/direnv/blob/master/docs/hook.md#setup"
+    echo "sudo apt update && sudo apt install direnv && echo 'eval \"\$(direnv hook bash)\"' >> ~/.bashrc && source ~/.bashrc"
+    exit 1
+fi
+
+if [ -f "$envrcChangeme" ]; then
+  echo "Please edit .envrc_changeme and change the values to your own. rename to .envrc  run again"
+  echo "nano $envrcChangeme && mv $envrcChangeme $envrc"
+  exit 1
+fi
+
 if [ ! -e $(dirname "$TF_VAR_libvirt_disk_path") ]; then
   echo "$(dirname "$TF_VAR_libvirt_disk_path") does not exist."
   echo "sudo mkdir -p $(dirname $TF_VAR_libvirt_disk_path)"

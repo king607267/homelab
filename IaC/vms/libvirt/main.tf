@@ -74,6 +74,10 @@ resource "libvirt_domain" "domain-ubuntu" {
   cloudinit = element(libvirt_cloudinit_disk.commoninit.*.id, count.index)
   count     = length(concat(var.master_ips, var.node_ips))
 
+  cpu {
+    mode = "host-passthrough"
+  }
+
   network_interface {
     bridge         = "br0"
     wait_for_lease = false
