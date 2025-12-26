@@ -35,6 +35,16 @@ export x86_auto_install_ip=192.168.112.21/24
 #for cdrom /cdrom/server/,for remote https://auto.remote.com
 export x86_remote_user_data=/cdrom/server/
 
+export k3s_version="v1.35.0+k3s1"
+export k3s_token="changeme!"
+#"--cluster-init --write-kubeconfig-mode=644 --disable=traefik --disable=metrics-server --disable=network-policy --flannel-backend=none"
+#"--cluster-init --write-kubeconfig-mode=644 --disable=traefik --disable=metrics-server --disable local-storage"
+#"--cluster-init --write-kubeconfig-mode=644 --disable=traefik --disable local-storage"
+export k3s_server_args="--cluster-init --write-kubeconfig-mode=644 --disable=traefik --disable local-storage"
+export k3s_agent_scaling_ips1='["192.168.112.212","192.168.112.213","192.168.112.214"]'
+#export k3s_agent_scaling_ips2='[]'
+#export k3s_agent_scaling_ips3='[]'
+
 export gateway_namespace="home-gateway"
 export gateway_name="main-gateway"
 export gateway_ip="192.168.112.250"

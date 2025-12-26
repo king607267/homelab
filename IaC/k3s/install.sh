@@ -1,56 +1,28 @@
 #!/bin/bash
 set -eo pipefail
-envrcChangeme="$(dirname $(dirname $(pwd)))/.envrc_changeme"
-envrc="$(dirname $(dirname $(pwd)))/.envrc"
-k3sAnsiblePath="k3sAnsible/"
-k3sPath="$(pwd)"
-allYmlPath=${k3sAnsiblePath}inventory/my-cluster/group_vars/all.yml
-hostsPath=${k3sAnsiblePath}inventory/my-cluster/hosts.ini
-kubeConfigPath="$(pwd)/k3s.yaml"
-#
-if ! command -v direnv &> /dev/null; then
-    echo "Please install direnv https://github.com/direnv/direnv/blob/master/docs/installation.md"
-    echo "hook into your shell. https://github.com/direnv/direnv/blob/master/docs/hook.md#setup"
-    echo "sudo apt update && sudo apt install direnv && echo 'eval \"\$(direnv hook bash)\"' >> ~/.bashrc && source ~/.bashrc"
-    exit 1
+. var.sh
+. check.sh
+rm -f inventory.yml
+echo "---" >> inventory.yml
+echo "k3s_cluster:" >> inventory.yml
+echo "  children:" >> inventory.yml
+echo "    server:" >> inventory.yml
+echo "      hosts:" >> inventory.yml
+#判断TF_VAR_master_ips不为空并且不为[]
+if [ -n "$TF_VAR_master_ips" ] && [ "$TF_VAR_master_ips" != "[]" ]; then
+echo "        $TF_VAR_master_ips" | sed 's/[][]//g; s/"//g; s/,/:\n        /g; s/$/:/' >> inventory.yml
 fi
-
-if [ -f "$envrcChangeme" ]; then
-  echo "Please edit .envrc_changeme and change the values to your own. rename to .envrc  run again"
-  echo "nano $envrcChangeme && mv $envrcChangeme $envrc"
-  exit 1
+echo "    agent:" >> inventory.yml
+echo "      hosts:" >> inventory.yml
+if [ -n "$TF_VAR_node_ips" ] && [ "$TF_VAR_node_ips" != "[]" ]; then
+echo "        $TF_VAR_node_ips" | sed 's/[][]//g; s/"//g; s/,/:\n        /g; s/$/:/' >> inventory.yml
 fi
+grep -A 100 "vars:" ${k3sAnsiblePath}inventory-sample.yml >> inventory.yml
+sed -i "s/ansible_user:.*$/ansible_user: $TF_VAR_user/g" inventory.yml
+sed -i "s/k3s_version:.*$/k3s_version: $k3s_version/g" inventory.yml
+sed -i "s/token:.*$/token: $k3s_token/g" inventory.yml
+sed -i "s/# extra_server_args:.*$/extra_server_args: $k3s_server_args/g" inventory.yml
 
-if ! command -v ansible &> /dev/null; then
-  echo "Please install ansible2.11+, https://technotim.live/posts/ansible-automation/#installing-the-latest-version-of-ansible"
-  echo "curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py && python3 -m pip -V && echo 'export PATH=\"/home/`whoami`/.local/bin:\$PATH\"' >> ~/.bashrc && source ~/.bashrc && python3 -m pip install netaddr && python3 -m pip install --user ansible"
-  echo "or"
-  echo "sudo apt install ansible"
-  exit 1
-fi
-
-
-if [ ! -d "$k3sAnsiblePath" ]; then
-  git clone https://github.com/king607267/k3sAnsible.git ${k3sAnsiblePath}
-else
-  git -C ${k3sAnsiblePath} pull
-fi
-
-ansible-galaxy collection install -r ${k3sAnsiblePath}collections/requirements.yml
-
-if [ ! -f "inventory.yml" ]; then
-  echo "---" >> inventory.yml
-  echo "k3s_cluster:" >> inventory.yml
-  echo "  children:" >> inventory.yml
-  echo "    server:" >> inventory.yml
-  echo "      hosts:" >> inventory.yml
-  echo "        $TF_VAR_master_ips" | sed 's/[][]//g; s/"//g; s/,/:\n        /g; s/$/:/' >> inventory.yml
-  echo "    agent:" >> inventory.yml
-  echo "      hosts:" >> inventory.yml
-  echo "        $TF_VAR_node_ips" | sed 's/[][]//g; s/"//g; s/,/:\n        /g; s/$/:/' >> inventory.yml
-  grep -A 100 "vars:" ${k3sAnsiblePath}inventory-sample.yml >> inventory.yml
-  sed -i "s/ansible_user:.*$/ansible_user: $TF_VAR_user/g" inventory.yml
-fi
 echo "Please edit inventory.yml and change the values to your own."
 read -p "Press Enter to start editing..."
 ${EDITOR:-nano} "inventory.yml"
@@ -64,12 +36,4 @@ ssh -o LogLevel=FATAL -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=n
 if [ -f "$kubeConfigPath" ]; then
   sed -i "s|127.0.0.1|$master_ip|" "$kubeConfigPath"
 fi
-
-if ! command -v kubectl &> /dev/null; then
-  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-  sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-  chmod +x kubectl
-  mkdir -p ~/.local/bin
-  mv ./kubectl ~/.local/bin/kubectl
-fi
-kubectl get nodes;
+. kubectl.sh
