@@ -16,5 +16,5 @@ module "libvirt" {
   ssh_authorized_keys = var.ssh_authorized_keys
   hostname_prefix     = var.hostname_prefix
   libvirt_disk_path   = var.libvirt_disk_path
-  cloudimg_url        = var.cloudimg_url
+  cloudimg_path        = var.cloudimg_path
 }

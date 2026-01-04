@@ -6,7 +6,7 @@ variable "libvirt_disk_path" {
   default     = ""
 }
 
-variable "cloudimg_url" {
+variable "cloudimg_path" {
   description = "OS image"
   default     = ""
 }

@@ -6,7 +6,7 @@ variable "libvirt_disk_path" {
   type = string
 }
 
-variable "cloudimg_url" {
+variable "cloudimg_path" {
   type = string
 }
 

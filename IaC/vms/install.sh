@@ -22,9 +22,9 @@ if [ ! -e $(dirname "$TF_VAR_libvirt_disk_path") ]; then
   echo "sudo mkdir -p $(dirname $TF_VAR_libvirt_disk_path)"
   exit 1
 fi
-if [ ! -f "$TF_VAR_cloudimg_url" ]; then
-  echo "$TF_VAR_cloudimg_url does not exist."
-  echo "sudo mkdir -p $(dirname $TF_VAR_cloudimg_url) && sudo wget https://cloud-images.ubuntu.com/releases/jammy/release/ubuntu-22.04-server-cloudimg-amd64.img -O $TF_VAR_cloudimg_url"
+if [ ! -f "$TF_VAR_cloudimg_path" ]; then
+  echo "$TF_VAR_cloudimg_path does not exist."
+  echo "sudo mkdir -p $(dirname $TF_VAR_cloudimg_path) && sudo wget https://cloud-images.ubuntu.com/releases/noble/release/ubuntu-${cloudimg_version}-server-cloudimg-amd64.img -O $TF_VAR_cloudimg_path"
   exit 1
 fi
 if [ "$TF_VAR_libvirt" = "" ]; then
