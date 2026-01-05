@@ -37,34 +37,21 @@ resource "libvirt_volume" "disk_ubuntu_resized_data" {
 
 #https://yping88.medium.com/provisioning-multiple-linux-distributions-using-terraform-provider-for-libvirt-632186f1c007
 resource "libvirt_cloudinit_disk" "commoninit" {
-  count          = length(concat(var.master_ips, var.node_ips))
-  name           = format("%s-commoninit%d.iso", var.hostname_prefix, count.index)
-  user_data      = data.template_file.user_data[count.index].rendered
-  network_config = data.template_file.network_config[count.index].rendered
-  pool           = libvirt_pool.ubuntu.name
-}
-
-data "template_file" "user_data" {
-  count    = length(concat(var.master_ips, var.node_ips))
-  template = file("${path.module}/config/cloud_init.yml")
-  vars     = {
+  count     = length(concat(var.master_ips, var.node_ips))
+  name      = format("%s-commoninit%d.iso", var.hostname_prefix, count.index)
+  user_data = templatefile("${path.module}/config/cloud_init.yml", {
     host_name           = "${var.hostname_prefix}${count.index}"
     user                = var.user
     passwd              = var.passwd
     ssh_authorized_keys = var.ssh_authorized_keys
     proxy_ip            = var.proxy_ip
     no_proxy_ip         = var.no_proxy_ip
-  }
-}
-
-data "template_file" "network_config" {
-  count    = length(concat(var.master_ips, var.node_ips))
-  template = file("${path.module}/config/network_config.yml")
-  vars     = {
+  })
+  network_config = templatefile("${path.module}/config/network_config.yml", {
     ip_addr     = concat(var.master_ips, var.node_ips)[count.index]
     dns_server  = var.dns_server
     def_gateway = var.def_gateway
-  }
+  })
 }
 
 resource "libvirt_domain" "domain-ubuntu" {
