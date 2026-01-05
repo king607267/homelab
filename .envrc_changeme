@@ -13,7 +13,8 @@ export TF_VAR_hostname_prefix="homelab-host"
 export TF_VAR_disk_size="53687091200"
 export TF_VAR_data_disk_size="53687091200"
 export TF_VAR_libvirt_disk_path="/opt/terraform/kvm/pool/"
-export TF_VAR_cloudimg_url="/opt/terraform/kvm/img/ubuntu-22.04-server-cloudimg-amd64.img"
+export cloudimg_version="24.04"
+export TF_VAR_cloudimg_path="/opt/terraform/kvm/img/ubuntu-${cloudimg_version}-server-cloudimg-amd64.img"
 export TF_VAR_vcpu="1"
 export TF_VAR_memory="2048"
 #"192.168.1.10"
@@ -41,9 +42,10 @@ export k3s_token="changeme!"
 #"--cluster-init --write-kubeconfig-mode=644 --disable=traefik --disable=metrics-server --disable local-storage"
 #"--cluster-init --write-kubeconfig-mode=644 --disable=traefik --disable local-storage"
 export k3s_server_args="--cluster-init --write-kubeconfig-mode=644 --disable=traefik --disable local-storage"
-export k3s_agent_scaling_ips1='["192.168.112.212","192.168.112.213","192.168.112.214"]'
+export k3s_server_scaling_ips1='[]'
+#export k3s_server_scaling_ips2='[]'
+export k3s_agent_scaling_ips1='[]'
 #export k3s_agent_scaling_ips2='[]'
-#export k3s_agent_scaling_ips3='[]'
 
 export gateway_namespace="home-gateway"
 export gateway_name="main-gateway"
@@ -68,6 +70,8 @@ export domain_wow_tbc=domain.wow.tbc.com
 export domain_wow_classic=domain.wow.classic.com
 export domain_kubeshark=domain.kubeshark.com
 export domain_generalized=*.domain.com
+export domain_https_route_name=shared-https
+export domain_http_route_name=shared-http
 
 export alidns_group_name=example.com
 #base64
@@ -158,4 +162,5 @@ certManager
 gatewayAPI
 longhorn
 #headlamp
+updateDNS
 EOF`

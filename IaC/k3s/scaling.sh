@@ -8,14 +8,18 @@ echo "k3s_cluster_scaling:" >> inventory.yml
 echo "  children:" >> inventory.yml
 echo "    server:" >> inventory.yml
 echo "      hosts:" >> inventory.yml
-echo "        $TF_VAR_master_ips" | sed 's/[][]//g; s/"//g; s/,/:\n        /g; s/$/:/' >> inventory.yml
+echo "        $(kubectl get nodes --selector='node-role.kubernetes.io/control-plane=true' -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}'):"  >> inventory.yml
 echo "    server_scaling:" >> inventory.yml
 echo "      hosts:" >> inventory.yml
-echo "        $TF_VAR_master_ips" | sed 's/[][]//g; s/"//g; s/,/:\n        /g; s/$/:/' >> inventory.yml
+server_scaling_ips=$(printf '%s\n' $(env | grep -o "^k3s_server_scaling_ips[0-9]*") | sort -t'v' -k2,2n | tail -1)
+if [ -n "$server_scaling_ips" ] && [ "${!server_scaling_ips}" != '[]' ]; then
+  echo "        $(kubectl get nodes --selector='node-role.kubernetes.io/control-plane=true' -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}'):"  >> inventory.yml
+  echo "        ${!server_scaling_ips}" | sed 's/[][]//g; s/"//g; s/,/:\n        /g; s/$/:/' >> inventory.yml
+fi
 echo "    agent_scaling:" >> inventory.yml
 echo "      hosts:" >> inventory.yml
-if [ -n "$k3s_agent_scaling_ips1" ] && [ "$k3s_agent_scaling_ips1" != "[]" ]; then
-  agent_scaling_ips=$(printf '%s\n' $(env | grep -o "^k3s_agent_scaling_ips1[0-9]*") | sort -t'v' -k2,2n | tail -1)
+agent_scaling_ips=$(printf '%s\n' $(env | grep -o "^k3s_agent_scaling_ips[0-9]*") | sort -t'v' -k2,2n | tail -1)
+if [ -n "$agent_scaling_ips" ] && [ "${!agent_scaling_ips}" != "[]" ]; then
   echo "        ${!agent_scaling_ips}" | sed 's/[][]//g; s/"//g; s/,/:\n        /g; s/$/:/' >> inventory.yml
 fi
 grep -A 100 "vars:" ${k3sAnsiblePath}inventory-sample.yml >> inventory.yml
