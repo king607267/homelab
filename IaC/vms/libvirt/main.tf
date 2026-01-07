@@ -4,17 +4,17 @@ provider "libvirt" {
   uri = var.libvirt
 }
 
-resource "libvirt_pool" "ubuntu" {
-  name = "homelab"
-  type = "dir"
-  target {
-    path = var.libvirt_disk_path
-  }
-}
+#resource "libvirt_pool" "ubuntu" {
+#  name = var.volume_pool_name
+#  type = "dir"
+#  target {
+#    path = var.libvirt_disk_path
+#  }
+#}
 
 resource "libvirt_volume" "ubuntu-qcow2" {
   name   = format("%s-cloudimg%d", var.hostname_prefix, count.index)
-  pool   = libvirt_pool.ubuntu.name
+  pool   = var.volume_pool_name
   source = var.cloudimg_path
   format = "qcow2"
   count  = length(concat(var.master_ips, var.node_ips))
@@ -23,14 +23,14 @@ resource "libvirt_volume" "ubuntu-qcow2" {
 resource "libvirt_volume" "disk_ubuntu_resized" {
   name           = "${var.hostname_prefix}${count.index}"
   base_volume_id = element(libvirt_volume.ubuntu-qcow2.*.id, count.index)
-  pool           = libvirt_pool.ubuntu.name
+  pool           = var.volume_pool_name
   size           = var.disk_size
   count          = length(concat(var.master_ips, var.node_ips))
 }
 
 resource "libvirt_volume" "disk_ubuntu_resized_data" {
   name  = format("%s-data%d", var.hostname_prefix, count.index)
-  pool  = libvirt_pool.ubuntu.name
+  pool  = var.volume_pool_name
   size  = var.data_disk_size
   count = length(concat(var.master_ips, var.node_ips))
 }
@@ -39,6 +39,7 @@ resource "libvirt_volume" "disk_ubuntu_resized_data" {
 resource "libvirt_cloudinit_disk" "commoninit" {
   count     = length(concat(var.master_ips, var.node_ips))
   name      = format("%s-commoninit%d.iso", var.hostname_prefix, count.index)
+  pool      = var.volume_pool_name
   user_data = templatefile("${path.module}/config/cloud_init.yml", {
     host_name           = "${var.hostname_prefix}${count.index}"
     user                = var.user
@@ -100,7 +101,7 @@ resource "libvirt_domain" "domain-ubuntu" {
   provisioner "remote-exec" {
     inline = [
       "echo hostname:`cat /etc/hostname`",
-#      "sudo apt-get update -qq && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y nfs-common"
+      #      "sudo apt-get update -qq && DEBIAN_FRONTEND=noninteractive sudo apt-get install -y nfs-common"
     ]
 
     connection {

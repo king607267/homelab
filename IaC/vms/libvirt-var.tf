@@ -10,6 +10,10 @@ variable "cloudimg_path" {
   type = string
 }
 
+variable "volume_pool_name" {
+  type = string
+}
+
 variable "memory" {
   type = string
 }

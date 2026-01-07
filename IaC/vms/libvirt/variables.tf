@@ -11,6 +11,11 @@ variable "cloudimg_path" {
   default     = ""
 }
 
+variable "volume_pool_name" {
+  type    = string
+  default = "homelab"
+}
+
 variable "ssh_private_key" {
   description = "the private key to use"
   default     = "~/.ssh/id_rsa"

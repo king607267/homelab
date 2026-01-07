@@ -1,6 +1,6 @@
 #----------vms,k3s----------
-#export install_vms=true
 export TF_VAR_user=ubuntu
+#qemu:///system,qemu+ssh://user@ip/system?keyfile=~/.ssh/id_rsa
 export TF_VAR_libvirt=""
 # docker run --rm -it serversideup/mkpasswd --method=SHA-512
 #123456
@@ -8,11 +8,12 @@ export TF_VAR_passwd='$6$0CNw1tIs95L$eqVKBZGA4b7bJuEP0j/k0adQ7DYsCsGJMlXbdqRVoJ7
 export TF_VAR_ssh_authorized_keys='[]'
 export TF_VAR_proxy_ip=''
 export TF_VAR_no_proxy_ip=''
-export TF_VAR_hostname_prefix="homelab-host"
+export TF_VAR_hostname_prefix="host"
 #50G
 export TF_VAR_disk_size="53687091200"
 export TF_VAR_data_disk_size="53687091200"
-export TF_VAR_libvirt_disk_path="/opt/terraform/kvm/pool/"
+export TF_VAR_libvirt_disk_path="/opt/terraform/kvm/pool"
+export TF_VAR_volume_pool_name="homelab"
 export cloudimg_version="24.04"
 export TF_VAR_cloudimg_path="/opt/terraform/kvm/img/ubuntu-${cloudimg_version}-server-cloudimg-amd64.img"
 export TF_VAR_vcpu="1"
